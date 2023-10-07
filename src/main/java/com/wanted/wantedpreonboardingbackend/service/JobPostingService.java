@@ -18,4 +18,17 @@ public class JobPostingService {
         BeanUtils.copyProperties(jobPostingDTO, jobPosting);
         return jobPostingRepository.save(jobPosting);
     }
+
+    // 채용공고 수정
+    public JobPosting updateJobPosting(Integer id, JobPostingDTO jobPostingDTO) {
+        JobPosting jobPosting = jobPostingRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("해당 id의 채용공고 찾을 수 없음 : "+ id));
+
+        jobPosting.setPosition(jobPostingDTO.getPosition());
+        jobPosting.setCompensation(jobPostingDTO.getCompensation());
+        jobPosting.setDetail(jobPostingDTO.getDetail());
+        jobPosting.setSkill(jobPostingDTO.getSkill());
+
+        return jobPostingRepository.save(jobPosting);
+    }
 }

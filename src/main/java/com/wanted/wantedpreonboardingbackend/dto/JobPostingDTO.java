@@ -4,6 +4,7 @@ import lombok.Data;
 
 @Data
 public class JobPostingDTO {
+    private Integer id; //채용공고_id
     private Integer companyId; //회사_id
     private String position; //채용포지션
     private String detail; //채용내용
