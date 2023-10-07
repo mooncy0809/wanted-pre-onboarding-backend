@@ -7,6 +7,6 @@
 
 ### 2. 구현 과정
 1. 프로젝트 설정 및 초기 세팅:
-![img.png](img.png)
+![img.png](spring_initializ_img.png)
 2. ERD 작성:
-
+![img.png](erd.png)
