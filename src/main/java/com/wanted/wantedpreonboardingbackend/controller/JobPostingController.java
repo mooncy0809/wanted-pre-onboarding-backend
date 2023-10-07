@@ -25,4 +25,10 @@ public class JobPostingController {
         JobPosting jobPosting = jobPostingService.updateJobPosting(id, jobPostingDTO);
         return new ResponseEntity<>(jobPosting, HttpStatus.OK);
     }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<String> deleteJobPosting(@PathVariable Integer id) {
+        jobPostingService.deleteJobPosting(id);
+        return new ResponseEntity<>("채용공고가 삭제되었음.", HttpStatus.OK);
+    }
 }

@@ -31,4 +31,9 @@ public class JobPostingService {
 
         return jobPostingRepository.save(jobPosting);
     }
+
+    // 채용공고 삭제
+    public void deleteJobPosting(Integer id) {
+        jobPostingRepository.deleteById(id);
+    }
 }
