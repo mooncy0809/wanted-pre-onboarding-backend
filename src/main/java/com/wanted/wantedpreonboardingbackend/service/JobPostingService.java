@@ -34,6 +34,9 @@ public class JobPostingService {
 
     // 채용공고 삭제
     public void deleteJobPosting(Integer id) {
+        jobPostingRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("해당 id의 채용공고 찾을 수 없음 : " + id));
+
         jobPostingRepository.deleteById(id);
     }
 }

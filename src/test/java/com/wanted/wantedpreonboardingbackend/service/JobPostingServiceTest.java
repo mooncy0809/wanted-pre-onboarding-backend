@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @SpringBootTest
 class JobPostingServiceTest {
@@ -45,9 +45,8 @@ class JobPostingServiceTest {
         jobPostingDTO.setDetail("원티드랩에서 시니어 개발자를 채용합니다. 자격요건은..");
         jobPostingDTO.setSkill("Java");
 
-        Integer id = 1;
+        Integer id = 1; //수정할 채용공고_id
         JobPosting jobPosting = new JobPosting();
-        jobPosting.setId(id);
         when(jobPostingRepository.findById(id)).thenReturn(Optional.of(jobPosting));
 
         JobPosting updateJobPosting = jobPostingService.updateJobPosting(id, jobPostingDTO);
@@ -56,4 +55,17 @@ class JobPostingServiceTest {
         assertEquals(jobPostingDTO.getPosition(), updateJobPosting.getPosition());
     }
 
+    @DisplayName("deleteJobPosting: 채용공고 삭제 성공.")
+    @Test
+    void testDeleteJobPosting() {
+        Integer id = 1; // 삭제할 채용공고_id
+
+        JobPosting jobPosting = new JobPosting();
+        when(jobPostingRepository.findById(id)).thenReturn(Optional.of(jobPosting));
+
+        jobPostingService.deleteJobPosting(id);
+
+        Optional<JobPosting> jobPostingAfterDelete = jobPostingRepository.findById(id);
+        assertNull(jobPostingAfterDelete.orElse(null).getId());
+    }
 }
