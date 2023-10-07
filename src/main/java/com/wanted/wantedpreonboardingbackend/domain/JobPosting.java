@@ -12,8 +12,9 @@ public class JobPosting {
     @Column(name = "id" , updatable = false)
     private Integer id; //채용공고_id
 
-    @Column(name = "company_id" , nullable = false)
-    private Integer companyId; //회사_id
+    @ManyToOne
+    @JoinColumn(name = "company_id", nullable = false)
+    private Company company;
 
     @Column(nullable = false)
     private String position; //채용포지션

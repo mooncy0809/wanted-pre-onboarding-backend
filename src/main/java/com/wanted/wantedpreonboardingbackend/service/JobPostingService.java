@@ -26,6 +26,13 @@ public class JobPostingService {
     public JobPosting createJobPosting(JobPostingDTO jobPostingDTO) {
         JobPosting jobPosting = new JobPosting();
         BeanUtils.copyProperties(jobPostingDTO, jobPosting);
+
+        Integer companyId = jobPostingDTO.getCompanyId();
+        Company company = companyRepository.findById(companyId)
+                .orElseThrow(() -> new RuntimeException("해당 ID의  회사를 찾을 수 없음 : " + companyId));
+
+        jobPosting.setCompany(company);
+
         return jobPostingRepository.save(jobPosting);
     }
 
@@ -56,12 +63,13 @@ public class JobPostingService {
         List<JobPostingDTO> jobPostingDTOList = new ArrayList<>();
 
         for(JobPosting jobPosting : jobPostings) {
-            Integer companyId = jobPosting.getCompanyId();
+            Integer companyId = jobPosting.getCompany().getId();
             Optional<Company> optionalCompany = companyRepository.findById(companyId);
 
             optionalCompany.ifPresent(company -> {
                 JobPostingDTO jobPostingDTO = new JobPostingDTO();
                 BeanUtils.copyProperties(jobPosting, jobPostingDTO);
+                jobPostingDTO.setCompanyId(companyId);
                 jobPostingDTO.setCompanyName(company.getName());
                 jobPostingDTO.setCountry(company.getCountry());
                 jobPostingDTO.setLocation(company.getLocation());
@@ -80,7 +88,36 @@ public class JobPostingService {
         return jobPostingDTOList;
     }
 
-    public List<JobPostingDTO> searchJobPosting(String search) {
-        List<JobPosting> jobPostingList = jobPostingRepository.
+    // 채용공고 검색하기
+    public List<JobPostingDTO> searchJobPosting(String keyword) {
+        List<JobPosting> jobPostingList =
+                jobPostingRepository.findByPositionContainingOrSkillContainingOrCompanyId_NameContainingOrCompanyId_CountryContainingOrCompanyId_LocationContaining
+                        (keyword, keyword, keyword, keyword, keyword);
+        List<JobPostingDTO> jobPostingDTOList = new ArrayList<>();
+
+        for (JobPosting jobPosting : jobPostingList) {
+            Integer companyId = jobPosting.getCompany().getId();
+            Optional<Company> optionalCompany = companyRepository.findById(companyId);
+
+            optionalCompany.ifPresent(company -> {
+                JobPostingDTO jobPostingDTO = new JobPostingDTO();
+                BeanUtils.copyProperties(jobPosting, jobPostingDTO);
+                jobPostingDTO.setCompanyId(companyId);
+                jobPostingDTO.setCompanyName(company.getName());
+                jobPostingDTO.setCountry(company.getCountry());
+                jobPostingDTO.setLocation(company.getLocation());
+
+                List<Integer> jobPostingIdList = jobPostingRepository.findByCompanyId(companyId)
+                        .stream()
+                        .map(JobPosting::getId)
+                        .filter(id -> !id.equals(jobPosting.getId()))
+                        .collect(Collectors.toList());
+
+                jobPostingDTO.setOtherJobPostingids(jobPostingIdList);
+
+                jobPostingDTOList.add(jobPostingDTO);
+            });
+        }
+        return jobPostingDTOList;
     }
 }

@@ -7,6 +7,6 @@ import java.util.List;
 
 public interface JobPostingRepository extends JpaRepository<JobPosting, Integer> {
     List<JobPosting> findByCompanyId(Integer companyId);
-    List<JobPosting> findSearchKeyword(String companyName, String position);
-
+    List<JobPosting> findByPositionContainingOrSkillContainingOrCompanyId_NameContainingOrCompanyId_CountryContainingOrCompanyId_LocationContaining
+            (String position, String skill, String name, String country, String location);
 }

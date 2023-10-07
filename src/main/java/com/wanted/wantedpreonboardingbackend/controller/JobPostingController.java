@@ -39,4 +39,10 @@ public class JobPostingController {
         List<JobPostingDTO> jobpostings = jobPostingService.getJobPostingsList();
         return ResponseEntity.ok(jobpostings);
     }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<JobPostingDTO>> searchJobPosting(@RequestParam("search") String keyword) {
+        List<JobPostingDTO> jobpostings = jobPostingService.searchJobPosting(keyword);
+        return ResponseEntity.ok(jobpostings);
+    }
 }

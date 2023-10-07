@@ -45,7 +45,7 @@ class JobPostingServiceTest {
         jobPostingDTO.setDetail("원티드랩에서 시니어 개발자를 채용합니다. 자격요건은..");
         jobPostingDTO.setSkill("Java");
 
-        Integer id = 1; //수정할 채용공고_id
+        Integer id = 6; //수정할 채용공고_id
         JobPosting jobPosting = new JobPosting();
         when(jobPostingRepository.findById(id)).thenReturn(Optional.of(jobPosting));
 
