@@ -2,6 +2,7 @@ package com.wanted.wantedpreonboardingbackend.service;
 
 import com.wanted.wantedpreonboardingbackend.domain.JobPosting;
 import com.wanted.wantedpreonboardingbackend.dto.JobPostingDTO;
+import com.wanted.wantedpreonboardingbackend.dto.JobPostingDetailDTO;
 import com.wanted.wantedpreonboardingbackend.dto.JobPostingListDTO;
 import com.wanted.wantedpreonboardingbackend.repository.JobPostingRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -110,5 +111,21 @@ class JobPostingServiceTest {
         assertThat(searchResult).isNotEmpty();
         assertThat(searchResult).extracting(JobPostingListDTO::getId)
                 .contains(jobPosting.getCompany().getId());
+    }
+
+    @DisplayName("getJobPostingById: 채용공고 상세 페이지 가져오기 성공.")
+    @Test
+    void testGetJobPostingById() {
+        Integer id = 1; // 상세 페이지를 볼 채용공고_id
+        JobPosting jobPosting = new JobPosting();
+
+        when(jobPostingRepository.findById(id)).thenReturn(Optional.of(jobPosting));
+
+        when(jobPostingRepository.findByCompanyId(anyInt())).thenReturn(List.of(jobPosting));
+
+        JobPostingDetailDTO result = jobPostingService.getJobPostingById(id);
+
+        assertNotNull(result);
+        assertEquals(id, result.getId());
     }
 }
