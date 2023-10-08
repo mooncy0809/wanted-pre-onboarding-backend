@@ -2,6 +2,7 @@ package com.wanted.wantedpreonboardingbackend.service;
 
 import com.wanted.wantedpreonboardingbackend.domain.JobPosting;
 import com.wanted.wantedpreonboardingbackend.dto.JobPostingDTO;
+import com.wanted.wantedpreonboardingbackend.dto.JobPostingListDTO;
 import com.wanted.wantedpreonboardingbackend.repository.JobPostingRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -49,7 +50,7 @@ class JobPostingServiceTest {
         jobPostingDTO.setDetail("원티드랩에서 시니어 개발자를 채용합니다. 자격요건은..");
         jobPostingDTO.setSkill("Java");
 
-        Integer id = 6; //수정할 채용공고_id
+        Integer id = 10; //수정할 채용공고_id
         JobPosting jobPosting = new JobPosting();
         when(jobPostingRepository.findById(id)).thenReturn(Optional.of(jobPosting));
 
@@ -62,7 +63,7 @@ class JobPostingServiceTest {
     @DisplayName("deleteJobPosting: 채용공고 삭제 성공.")
     @Test
     void testDeleteJobPosting() {
-        Integer id = 1; // 삭제할 채용공고_id
+        Integer id = 8; // 삭제할 채용공고_id
 
         JobPosting jobPosting = new JobPosting();
         when(jobPostingRepository.findById(id)).thenReturn(Optional.of(jobPosting));
@@ -85,10 +86,10 @@ class JobPostingServiceTest {
 
         JobPosting jobPosting = jobPostingService.createJobPosting(jobPostingDTO);
 
-        List<JobPostingDTO> jobPostingDTOList = jobPostingService.getJobPostingsList();
+        List<JobPostingListDTO> jobPostingDTOList = jobPostingService.getJobPostingsList();
 
         assertThat(jobPostingDTOList).isNotEmpty();
-        assertThat(jobPostingDTOList).extracting(JobPostingDTO::getCompanyId)
+        assertThat(jobPostingDTOList).extracting(JobPostingListDTO::getId)
                 .contains(jobPosting.getCompany().getId());
     }
 
@@ -104,10 +105,10 @@ class JobPostingServiceTest {
 
         JobPosting jobPosting = jobPostingService.createJobPosting(jobPostingDTO);
 
-        List<JobPostingDTO> searchResult = jobPostingService.searchJobPosting("원티드");
+        List<JobPostingListDTO> searchResult = jobPostingService.searchJobPosting("원티드");
 
         assertThat(searchResult).isNotEmpty();
-        assertThat(searchResult).extracting(JobPostingDTO::getCompanyId)
+        assertThat(searchResult).extracting(JobPostingListDTO::getId)
                 .contains(jobPosting.getCompany().getId());
     }
 }

@@ -2,6 +2,8 @@ package com.wanted.wantedpreonboardingbackend.controller;
 
 import com.wanted.wantedpreonboardingbackend.domain.JobPosting;
 import com.wanted.wantedpreonboardingbackend.dto.JobPostingDTO;
+import com.wanted.wantedpreonboardingbackend.dto.JobPostingDetailDTO;
+import com.wanted.wantedpreonboardingbackend.dto.JobPostingListDTO;
 import com.wanted.wantedpreonboardingbackend.service.JobPostingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -35,14 +37,16 @@ public class JobPostingController {
     }
 
     @GetMapping("/list")
-    public ResponseEntity<List<JobPostingDTO>> getJobPostingsList() {
-        List<JobPostingDTO> jobpostings = jobPostingService.getJobPostingsList();
-        return ResponseEntity.ok(jobpostings);
+    public ResponseEntity<List<JobPostingListDTO>> getJobPostingsList() {
+        return ResponseEntity.ok(jobPostingService.getJobPostingsList());
     }
 
     @GetMapping("/search")
-    public ResponseEntity<List<JobPostingDTO>> searchJobPosting(@RequestParam("search") String keyword) {
-        List<JobPostingDTO> jobpostings = jobPostingService.searchJobPosting(keyword);
-        return ResponseEntity.ok(jobpostings);
+    public ResponseEntity<List<JobPostingListDTO>> searchJobPosting(@RequestParam("search") String keyword) {
+        return ResponseEntity.ok(jobPostingService.searchJobPosting(keyword));
+    }
+    @GetMapping("/details/{id}")
+    public ResponseEntity<JobPostingDetailDTO> getJobPostingById(@PathVariable Integer id) {
+        return ResponseEntity.ok(jobPostingService.getJobPostingById(id));
     }
 }

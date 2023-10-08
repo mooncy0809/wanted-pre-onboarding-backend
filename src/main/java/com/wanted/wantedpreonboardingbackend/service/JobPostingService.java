@@ -3,6 +3,8 @@ package com.wanted.wantedpreonboardingbackend.service;
 import com.wanted.wantedpreonboardingbackend.domain.Company;
 import com.wanted.wantedpreonboardingbackend.domain.JobPosting;
 import com.wanted.wantedpreonboardingbackend.dto.JobPostingDTO;
+import com.wanted.wantedpreonboardingbackend.dto.JobPostingDetailDTO;
+import com.wanted.wantedpreonboardingbackend.dto.JobPostingListDTO;
 import com.wanted.wantedpreonboardingbackend.repository.CompanyRepository;
 import com.wanted.wantedpreonboardingbackend.repository.JobPostingRepository;
 import org.springframework.beans.BeanUtils;
@@ -58,66 +60,30 @@ public class JobPostingService {
     }
 
     // 채용공고 목록 가져오기
-    public List<JobPostingDTO> getJobPostingsList() {
-        List<JobPosting> jobPostings = jobPostingRepository.findAll();
-        List<JobPostingDTO> jobPostingDTOList = new ArrayList<>();
-
-        for(JobPosting jobPosting : jobPostings) {
-            Integer companyId = jobPosting.getCompany().getId();
-            Optional<Company> optionalCompany = companyRepository.findById(companyId);
-
-            optionalCompany.ifPresent(company -> {
-                JobPostingDTO jobPostingDTO = new JobPostingDTO();
-                BeanUtils.copyProperties(jobPosting, jobPostingDTO);
-                jobPostingDTO.setCompanyId(companyId);
-                jobPostingDTO.setCompanyName(company.getName());
-                jobPostingDTO.setCountry(company.getCountry());
-                jobPostingDTO.setLocation(company.getLocation());
-
-                List<Integer> jobPostingIdList = jobPostingRepository.findByCompanyId(companyId) // 회사의 다른 채용공고 목록 가져옴
-                        .stream()
-                        .map(JobPosting::getId) // 현재 채용공고를 제외한 다른 채용공고 필터링
-                        .filter(id -> !id.equals(jobPosting.getId()))// JobPosting 객체의 getId 메서드 추출
-                        .collect(Collectors.toList());
-
-                jobPostingDTO.setOtherJobPostingids(jobPostingIdList);
-
-                jobPostingDTOList.add(jobPostingDTO);
-            });
-        }
-        return jobPostingDTOList;
+    public List<JobPostingListDTO> getJobPostingsList() {
+        return jobPostingRepository.findAll()
+                .stream().map(JobPostingListDTO::new)
+                .toList();
     }
 
     // 채용공고 검색하기
-    public List<JobPostingDTO> searchJobPosting(String keyword) {
-        List<JobPosting> jobPostingList =
-                jobPostingRepository.findByPositionContainingOrSkillContainingOrCompanyId_NameContainingOrCompanyId_CountryContainingOrCompanyId_LocationContaining
-                        (keyword, keyword, keyword, keyword, keyword);
-        List<JobPostingDTO> jobPostingDTOList = new ArrayList<>();
+    public List<JobPostingListDTO> searchJobPosting(String keyword) {
+        return jobPostingRepository.findByPositionContainingOrSkillContainingOrCompanyId_NameContainingOrCompanyId_CountryContainingOrCompanyId_LocationContaining
+                        (keyword, keyword, keyword, keyword, keyword)
+                .stream().map(JobPostingListDTO::new)
+                .toList();
+    }
 
-        for (JobPosting jobPosting : jobPostingList) {
-            Integer companyId = jobPosting.getCompany().getId();
-            Optional<Company> optionalCompany = companyRepository.findById(companyId);
+    public JobPostingDetailDTO getJobPostingById(Integer id) {
+        JobPosting jobPosting = jobPostingRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("해당 id의 채용공고 찾을 수 없음 : " + id));
 
-            optionalCompany.ifPresent(company -> {
-                JobPostingDTO jobPostingDTO = new JobPostingDTO();
-                BeanUtils.copyProperties(jobPosting, jobPostingDTO);
-                jobPostingDTO.setCompanyId(companyId);
-                jobPostingDTO.setCompanyName(company.getName());
-                jobPostingDTO.setCountry(company.getCountry());
-                jobPostingDTO.setLocation(company.getLocation());
+        List<Integer> otherJobPostingIds = jobPostingRepository.findByCompanyId(jobPosting.getCompany().getId())
+                .stream()
+                .map(JobPosting::getId)
+                .filter(postingId -> !postingId.equals(id))
+                .collect(Collectors.toList());
 
-                List<Integer> jobPostingIdList = jobPostingRepository.findByCompanyId(companyId)
-                        .stream()
-                        .map(JobPosting::getId)
-                        .filter(id -> !id.equals(jobPosting.getId()))
-                        .collect(Collectors.toList());
-
-                jobPostingDTO.setOtherJobPostingids(jobPostingIdList);
-
-                jobPostingDTOList.add(jobPostingDTO);
-            });
-        }
-        return jobPostingDTOList;
+        return new JobPostingDetailDTO(jobPosting, otherJobPostingIds);
     }
 }
