@@ -189,15 +189,48 @@
       ```
 
 ### 2. 구현 과정
-1. **프로젝트 설정 및 초기 세팅:**
+1. **프로젝트 설정 및 초기 세팅**
    ![img.png](spring_initializ_img.png)
 
 
-2. **ERD 작성:**
+2. **ERD 작성**
    ![img_1.png](erd.png)
 
+3. **DDL 작성**
+   ```agsl
+   CREATE TABLE Company (
+       id INT AUTO_INCREMENT PRIMARY KEY,
+       name VARCHAR(255) NOT NULL,
+       country VARCHAR(100),
+       location VARCHAR(100)
+   );
+   
+   CREATE TABLE JobPosting (
+       id INT AUTO_INCREMENT PRIMARY KEY,
+       company_id INT NOT NULL,
+       position VARCHAR(255) NOT NULL,
+       compensation INT,
+       detail TEXT NOT NULL,
+       skill VARCHAR(255),
+       FOREIGN KEY (company_id) REFERENCES Company(id)
+   );
+   
+   CREATE TABLE User (
+       id INT AUTO_INCREMENT PRIMARY KEY,
+       name VARCHAR(100) NOT NULL
+   );
+   
+   CREATE TABLE History (
+       id INT AUTO_INCREMENT PRIMARY KEY,
+       job_posting_id INT NOT NULL,
+       user_id INT NOT NULL,
+       FOREIGN KEY (job_posting_id) REFERENCES JobPosting(id),
+       FOREIGN KEY (user_id) REFERENCES User(id)
+   );
+   ```
 
-3. **채용공고 등록 기능 구현**
+
+4. **채용공고 등록 기능 구현**
 
    ```agsl
     public JobPosting createJobPosting(JobPostingDTO jobPostingDTO) {
@@ -234,7 +267,7 @@
    ![img.png](img.png)
 
 
-4. **채용공고 수정 기능 구현**
+5. **채용공고 수정 기능 구현**
    ```agsl
    public JobPosting updateJobPosting(Integer id, JobPostingDTO jobPostingDTO) {
            JobPosting jobPosting = jobPostingRepository.findById(id)
@@ -271,7 +304,7 @@
    ![img_1.png](img_1.png)
 
 
-5. **채용공고 삭제 기능 구현**
+6. **채용공고 삭제 기능 구현**
    ```agsl
     public void deleteJobPosting(Integer id) {
         jobPostingRepository.findById(id)
@@ -303,7 +336,7 @@
    ![img_2.png](img_2.png)
 
 
-6. **채용공고 목록 구현**
+7. **채용공고 목록 구현**
    ```agsl
     public List<JobPostingListDTO> getJobPostingsList() {
         return jobPostingRepository.findAll()
@@ -333,7 +366,7 @@
    ![img_3.png](img_3.png)
 
 
-7. **채용공고 검색 기능 구현**
+8. **채용공고 검색 기능 구현**
    ```agsl
     public List<JobPostingListDTO> searchJobPosting(String keyword) {
         return jobPostingRepository.findByPositionContainingOrSkillContainingOrCompanyId_NameContainingOrCompanyId_CountryContainingOrCompanyId_LocationContaining
@@ -364,7 +397,7 @@
    ![img_4.png](img_4.png)
 
 
-8. **채용공고 상세 페이지 구현**
+9. **채용공고 상세 페이지 구현**
    ```agsl
     public JobPostingDetailDTO getJobPostingById(Integer id) {
         JobPosting jobPosting = jobPostingRepository.findById(id)
@@ -402,7 +435,7 @@
    ![img_5.png](img_5.png)
 
 
-9. **채용공고 지원 기능 구현**
+10. **채용공고 지원 기능 구현**
    ```agsl
     public HistoryDTO applyToJob(HistoryDTO historyDTO) {
         Integer jobPostingId = historyDTO.getJobPostingId();
@@ -461,3 +494,273 @@
    * 지원을 1번 이상 했을 때
    ![img_7.png](img_7.png)
 
+### 3. API 명세서
+| no | Description | Method | Path                                  | Request Parameters                                       |
+|:--:|:------------|:------:|:--------------------------------------|:---------------------------------------------------------|  
+| 1  | 채용공고 등록     |  POST  | /api/jobposting/create                | `body` {companyId, position, detail, compensation, skill |
+| 2  | 채용공고 수정     |  PUT   | /api/jobposting/update/{id}           | `body` {companyId, position, detail, compensation, skill |
+| 3  | 채용공고 삭제     | DELETE | /api/jobposting/delete/{id}           |                                                          |
+| 4  | 채용공고 전체목록   |  GET   | /api/jobposting/list                  |                                                          |
+| 5  | 채용공고 검색     |  GET   | /api/jobposting/search?search=keyword |                                                          |
+| 6  | 채용공고 상세페이지  |  GET   | /api/jobposting/details/{id}          |                                                          |
+| 7  | 채용공고 지원     |  POST  | /api/jobApply                         | `body` {jobPostingId, userId}                            |
+
+
+1. **채용공고 등록**
+```
+POST http://localhost:8090/api/jobposting/create
+```
+
+### Request
+#### Body (JSON)
+```js
+{
+   "companyId":1,
+   "position":"백엔드 주니어 개발자",
+   "compensation":1000000,
+   "detail":"원티드랩에서 백엔드 주니어 개발자를 채용합니다. 자격요건은..",
+   "skill":"Python"
+}
+```
+
+### Respose
+#### Status Code `201`
+```js
+{
+   "id": 1,
+   "company": {
+      "id": 1,
+      "name": "원티드랩",
+      "country": "한국",
+      "location": "서울"
+   },
+   "position": "백엔드 주니어 개발자",
+   "detail": "원티드랩에서 백엔드 주니어 개발자를 채용합니다. 자격요건은..",
+   "compensation": 1000000,
+   "skill": "Python"
+}
+```
+#### Error
+```js
+{
+   "timestamp": string,
+   "status": int,
+   "error": string,
+   "path": string
+}
+```
+
+
+2. **채용공고 수정**
+```
+PUT http://localhost:8090/api/jobposting/update/{id}
+```
+
+### Request
+#### Body (JSON)
+```js
+{
+   "position":"백엔드 주니어 개발자",
+   "compensation":1500000,
+   "detail":"원티드랩에서 백엔드 주니어 개발자를 '적극' 채용합니다. 자격요건은..",
+   "skill":"Django"
+}
+```
+
+### Respose
+#### Status Code `200`
+```js
+{
+   "id": 1,
+   "company": {
+      "id": 1,
+      "name": "원티드랩",
+      "country": "한국",
+      "location": "서울"
+   },
+   "position": "백엔드 주니어 개발자",
+   "detail": "원티드랩에서 백엔드 주니어 개발자를 '적극' 채용합니다. 자격요건은..",
+   "compensation": 1500000,
+   "skill": "Django"
+}
+```
+#### Error
+```js
+{
+   "timestamp": string,
+   "status": int,
+   "error": string,
+   "path": string
+}
+```
+
+
+3. **채용공고 삭제**
+```
+DELETE http://localhost:8090/api/jobposting/delete/{id}
+```
+
+### Respose
+#### Status Code `200`
+```js
+채용공고가 삭제되었음.
+```
+#### Error
+```js
+{
+   "timestamp": string,
+   "status": int,
+   "error": string,
+   "path": string
+}
+```
+
+
+4. **채용공고 전체목록**
+```
+GET http://localhost:8090/api/jobposting/list
+```
+
+### Respose
+#### Status Code `200`
+```js
+[
+   {
+      "id": 1,
+      "position": "백엔드 주니어 개발자",
+      "compensation": 1500000,
+      "skill": "Django",
+      "companyName": "원티드랩",
+      "country": "한국",
+      "location": "서울"
+   },
+   {
+      "id": 2,
+      "position": "백엔드 주니어 개발자",
+      "compensation": 1500000,
+      "skill": "Django",
+      "companyName": "원티드랩",
+      "country": "한국",
+      "location": "서울"
+   }
+   ...
+]
+```
+#### Error
+```js
+{
+   "timestamp": string,
+   "status": int,
+   "error": string,
+   "path": string
+}
+```
+
+
+5. **채용공고 검색**
+```
+GET http://localhost:8090/api/jobposting/search?search=keyword
+```
+### Request
+#### Parameter
+| key    |value type       | description | 예시    |
+|--------|-----------------|-------------|-------|
+| search |string| 검색 키워드      | "원티드" |
+
+
+### Respose
+#### Status Code `200`
+```js
+[
+   {
+      "id": 1,
+      "position": "백엔드 주니어 개발자",
+      "compensation": 1500000,
+      "skill": "Django",
+      "companyName": "원티드랩",
+      "country": "한국",
+      "location": "서울"
+   },
+   ...
+]
+```
+#### Error
+```js
+{
+   "timestamp": string,
+   "status": int,
+   "error": string,
+   "path": string
+}
+```
+
+
+6. **채용공고 상세페이지**
+```
+GET http://localhost:8090/api/jobposting/details/{id}
+```
+
+### Respose
+#### Status Code `200`
+```js
+{
+   "id": 1,
+   "position": "백엔드 주니어 개발자",
+   "detail": "원티드랩에서 백엔드 주니어 개발자를 '적극' 채용합니다. 자격요건은..",
+   "compensation": 1500000,
+   "skill": "Django",
+   "companyName": "원티드랩",
+   "country": "한국",
+   "location": "서울",
+   "otherJobPostingids": [
+        2
+   ]
+}
+```
+#### Error
+```js
+{
+   "timestamp": string,
+   "status": int,
+   "error": string,
+   "path": string
+}
+```
+
+
+7. **채용공고 지원**
+```
+POST http://localhost:8090/api/jobApply
+```
+
+### Request
+#### Body (JSON)
+```js
+{
+   "jobPostingId": 1,
+   "userId" : 1
+}
+```
+
+### Respose
+#### Status Code `200`
+```js
+{
+   "id": 1,
+   "jobPostingId": 2,
+   "userId": 1
+}
+```
+#### Error
+```js
+{
+   "timestamp": string,
+   "status": int,
+   "error": string,
+   "path": string
+}
+or
+{
+   "error": "사용자는 1회만 지원 가능합니다."
+}
+```
