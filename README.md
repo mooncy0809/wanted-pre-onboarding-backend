@@ -8,24 +8,27 @@
 
 
 - **기능적 요구사항**
+   
+   ORM, RDBMS를 사용하여 구현하고 구현항목은 다음과 같습니다.
+
   1. **채용공고를 등록합니다.**
 
-      <aside>
-      ➡️ 회사는 아래 데이터와 같이 채용공고를 등록합니다.
+       <aside>
+       ➡️ 회사는 아래 데이터와 같이 채용공고를 등록합니다.
 
-      </aside>
+       </aside>
 
-      ```json
-      Example)
-      # 데이터 예시이며, 필드명은 임의로 설정가능합니다.
-      {
-        "회사_id":회사_id,
-        "채용포지션":"백엔드 주니어 개발자",
-        "채용보상금":1000000,
-        "채용내용":"원티드랩에서 백엔드 주니어 개발자를 채용합니다. 자격요건은..",
-        "사용기술":"Python"
-      }
-      ```
+       ```json
+       Example)
+       # 데이터 예시이며, 필드명은 임의로 설정가능합니다.
+       {
+         "회사_id":회사_id,
+         "채용포지션":"백엔드 주니어 개발자",
+         "채용보상금":1000000,
+         "채용내용":"원티드랩에서 백엔드 주니어 개발자를 채용합니다. 자격요건은..",
+         "사용기술":"Python"
+       }
+       ```
 
   2. **채용공고를 수정합니다.**
 
@@ -187,9 +190,13 @@
 
 ### 2. 구현 과정
 1. **프로젝트 설정 및 초기 세팅:**
-![img.png](spring_initializ_img.png)
+   ![img.png](spring_initializ_img.png)
+
+
 2. **ERD 작성:**
-![img_1.png](erd.png)
+   ![img_1.png](erd.png)
+
+
 3. **채용공고 등록 기능 구현**
 
    ```agsl
@@ -207,8 +214,9 @@
     }
    ```
    <aside>
-   *️⃣ JobPostingDTO에서 필요한 정보를 추출하여 JobPosting 객체를 생성하고 해당 객체에 회사 정보를 추가한 후 저장.
+   ➡️ JobPostingDTO에서 필요한 정보를 추출하여 JobPosting 객체를 생성하고 해당 객체에 회사 정보를 추가한 후 저장.
    </aside>
+   <br>
 
    ```agsl
     @PostMapping("/create")
@@ -218,13 +226,14 @@
        }
    ```
    <aside>
-   *️⃣ 클라이언트가 전송한 JobPostingDTO를 jobPostingService.createJobPosting 메서드를 호출하여 채용공고를 생성. 생성된 공고를 ResponseEntity에 담아 HTTP 상태코드와 함께 반환.
+   ➡️ 클라이언트가 전송한 JobPostingDTO를 jobPostingService.createJobPosting 메서드를 호출하여 채용공고를 생성. 생성된 공고를 ResponseEntity에 담아 HTTP 상태코드와 함께 반환.
    </aside>
+   <br>
+   
+   *️ **api 요청 테스트**<br>
+   ![img.png](img.png)
 
-   - **api 요청 테스트**
-![img.png](img.png)
-
-2. 채용공고 수정 기능
+2. **채용공고 수정 기능 구현**
    ```agsl
    public JobPosting updateJobPosting(Integer id, JobPostingDTO jobPostingDTO) {
            JobPosting jobPosting = jobPostingRepository.findById(id)
@@ -241,6 +250,7 @@
    <aside>
    *️⃣ jobPostingRepository.findById(id)를 사용하여 id에 해당하는 채용공고를 찾고 jobpostingDTO로부터 받은 정보를 사용하여 채용공고를 업데이트.
    </aside>
+   <br>
 
    ```agsl
     @PutMapping("/update/{id}")
