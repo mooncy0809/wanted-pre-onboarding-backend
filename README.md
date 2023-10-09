@@ -5,7 +5,7 @@
 본 서비스는 기업의 채용을 위한 웹 서비스 입니다.
 회사는 채용공고를 생성하고, 이에 사용자는 지원합니다.
 
-- 기능적 요구사항
+- <strong>기능적 요구사항</strong>
 1. **채용공고를 등록합니다.**
 
     <aside>
@@ -184,13 +184,13 @@
     ```
 
 ### 2. 구현 과정
-1. 프로젝트 설정 및 초기 세팅:
+1. **프로젝트 설정 및 초기 세팅:**
 ![img.png](spring_initializ_img.png)
-2. ERD 작성:
+2. **ERD 작성:**
 ![img_1.png](erd.png)
-3. 기능구현
-1. 채용공고 등록 기능
-```agsl
+3. **채용공고 등록 기능 구현**
+
+   ```agsl
     public JobPosting createJobPosting(JobPostingDTO jobPostingDTO) {
         JobPosting jobPosting = new JobPosting();
         BeanUtils.copyProperties(jobPostingDTO, jobPosting);
@@ -203,43 +203,49 @@
 
         return jobPostingRepository.save(jobPosting);
     }
-```
-JobPostingDTO에서 필요한 정보를 추출하여 JobPosting 객체를 생성하고 해당 객체에 회사 정보를 추가한 후 저장.
+   ```
+   <aside>
+   *️⃣ JobPostingDTO에서 필요한 정보를 추출하여 JobPosting 객체를 생성하고 해당 객체에 회사 정보를 추가한 후 저장.
+   </aside>
 
-```agsl
- @PostMapping("/create")
-    public ResponseEntity<JobPosting> createJobPosting(@RequestBody JobPostingDTO jobPostingDTO) {
-        JobPosting jobPosting = jobPostingService.createJobPosting(jobPostingDTO);
-        return new ResponseEntity<>(jobPosting, HttpStatus.CREATED);
-    }
-```
-클라이언트가 전송한 JobPostingDTO를 jobPostingService.createJobPosting 메서드를 호출하여 채용공고를 생성. 생성된 공고를 ResponseEntity에 담아 HTTP 상태코드와 함께 반환.
+   ```agsl
+    @PostMapping("/create")
+       public ResponseEntity<JobPosting> createJobPosting(@RequestBody JobPostingDTO jobPostingDTO) {
+           JobPosting jobPosting = jobPostingService.createJobPosting(jobPostingDTO);
+           return new ResponseEntity<>(jobPosting, HttpStatus.CREATED);
+       }
+   ```
+   <aside>
+   *️⃣ 클라이언트가 전송한 JobPostingDTO를 jobPostingService.createJobPosting 메서드를 호출하여 채용공고를 생성. 생성된 공고를 ResponseEntity에 담아 HTTP 상태코드와 함께 반환.
+   </aside>
 
--api 요청 테스트
+   - **api 요청 테스트**
 ![img.png](img.png)
 
 2. 채용공고 수정 기능
-```agsl
-public JobPosting updateJobPosting(Integer id, JobPostingDTO jobPostingDTO) {
-        JobPosting jobPosting = jobPostingRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("해당 id의 채용공고 찾을 수 없음 : "+ id));
+   ```agsl
+   public JobPosting updateJobPosting(Integer id, JobPostingDTO jobPostingDTO) {
+           JobPosting jobPosting = jobPostingRepository.findById(id)
+                   .orElseThrow(() -> new RuntimeException("해당 id의 채용공고 찾을 수 없음 : "+ id));
+   
+           jobPosting.setPosition(jobPostingDTO.getPosition());
+           jobPosting.setCompensation(jobPostingDTO.getCompensation());
+           jobPosting.setDetail(jobPostingDTO.getDetail());
+           jobPosting.setSkill(jobPostingDTO.getSkill());
+   
+           return jobPostingRepository.save(jobPosting);
+       }
+   ```
+   <aside>
+   *️⃣ jobPostingRepository.findById(id)를 사용하여 id에 해당하는 채용공고를 찾고 jobpostingDTO로부터 받은 정보를 사용하여 채용공고를 업데이트.
+   </aside>
 
-        jobPosting.setPosition(jobPostingDTO.getPosition());
-        jobPosting.setCompensation(jobPostingDTO.getCompensation());
-        jobPosting.setDetail(jobPostingDTO.getDetail());
-        jobPosting.setSkill(jobPostingDTO.getSkill());
-
-        return jobPostingRepository.save(jobPosting);
-    }
-```
-jobPostingRepository.findById(id)를 사용하여 id에 해당하는 채용공고를 찾고 jobpostingDTO로부터 받은 정보를 사용하여 채용공고를 업데이트.
-
-```agsl
- @PutMapping("/update/{id}")
-    public ResponseEntity<JobPosting> updateJobPosting(@PathVariable Integer id, @RequestBody JobPostingDTO jobPostingDTO) {
-        JobPosting jobPosting = jobPostingService.updateJobPosting(id, jobPostingDTO);
-        return new ResponseEntity<>(jobPosting, HttpStatus.OK);
-    }
-```
+   ```agsl
+    @PutMapping("/update/{id}")
+       public ResponseEntity<JobPosting> updateJobPosting(@PathVariable Integer id, @RequestBody JobPostingDTO jobPostingDTO) {
+           JobPosting jobPosting = jobPostingService.updateJobPosting(id, jobPostingDTO);
+           return new ResponseEntity<>(jobPosting, HttpStatus.OK);
+       }
+   ```
 
 3. 
