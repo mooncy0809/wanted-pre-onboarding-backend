@@ -45,6 +45,7 @@ public class JobPostingController {
     public ResponseEntity<List<JobPostingListDTO>> searchJobPosting(@RequestParam("search") String keyword) {
         return ResponseEntity.ok(jobPostingService.searchJobPosting(keyword));
     }
+
     @GetMapping("/details/{id}")
     public ResponseEntity<JobPostingDetailDTO> getJobPostingById(@PathVariable Integer id) {
         return ResponseEntity.ok(jobPostingService.getJobPostingById(id));

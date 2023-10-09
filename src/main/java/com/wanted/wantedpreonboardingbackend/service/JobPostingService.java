@@ -72,6 +72,7 @@ public class JobPostingService {
                 .toList();
     }
 
+    // 채용공고 상세페이지
     public JobPostingDetailDTO getJobPostingById(Integer id) {
         JobPosting jobPosting = jobPostingRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("해당 id의 채용공고 찾을 수 없음 : " + id));
