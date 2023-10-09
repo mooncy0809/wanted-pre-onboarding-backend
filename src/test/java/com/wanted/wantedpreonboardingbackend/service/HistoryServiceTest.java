@@ -1,8 +1,6 @@
 package com.wanted.wantedpreonboardingbackend.service;
 
 import com.wanted.wantedpreonboardingbackend.domain.History;
-import com.wanted.wantedpreonboardingbackend.domain.JobPosting;
-import com.wanted.wantedpreonboardingbackend.domain.User;
 import com.wanted.wantedpreonboardingbackend.dto.HistoryDTO;
 import com.wanted.wantedpreonboardingbackend.repository.HistoryRepository;
 import org.junit.jupiter.api.DisplayName;
