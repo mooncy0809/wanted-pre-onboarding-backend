@@ -249,7 +249,7 @@
        }
    ```
    <aside>
-   *️⃣ jobPostingRepository.findById(id)를 사용하여 id에 해당하는 채용공고를 찾고 jobpostingDTO로부터 받은 정보를 사용하여 채용공고를 업데이트합니다.
+   ➡️ jobPostingRepository.findById(id)를 사용하여 id에 해당하는 채용공고를 찾고 jobpostingDTO로부터 받은 정보를 사용하여 채용공고를 업데이트합니다.
    </aside>
    <br>
 
@@ -261,7 +261,7 @@
        }
    ```
    <aside>
-   *️⃣ /update/{id} 엔드포인트에 PUT 요청이 오면 메서드가 실행됩니다. 
+   ➡️ /update/{id} 엔드포인트에 PUT 요청이 오면 메서드가 실행됩니다. 
    클라이언트가 요청한 데이터를 jobPostingDTO 객체로 매핑하고 jobPostingService.updateJobPosting(id, jobPostingDTO)를 호출하여 주어진 id에 해당하는 채용공고를 업데이트합니다.
    HTTP 상태코드 200과 함께 업데이트된 채용공고를 클라이언트에 반환합니다.
    </aside>
@@ -281,7 +281,7 @@
     }
    ```
    <aside>
-   *️⃣ jobPostingRepository.findById(id)를 호출하여 id에 해당하는 채용공고를 찾고 없으면 예외를 발생시키고 있으면 jobPostingRepository.deleteById(id)를 호출하여 삭제합니다. 
+   ➡️ jobPostingRepository.findById(id)를 호출하여 id에 해당하는 채용공고를 찾고 없으면 예외를 발생시키고 있으면 jobPostingRepository.deleteById(id)를 호출하여 삭제합니다. 
    </aside>
    <br>
 
@@ -293,7 +293,7 @@
     } 
    ```
    <aside>
-   *️⃣  /delete/{id} 엔드포인트에 DELETE 요청이 오면 메서드가 실행됩니다.
+   ➡️ /delete/{id} 엔드포인트에 DELETE 요청이 오면 메서드가 실행됩니다.
    URL에서 id를 추출하고 jobPostingService.deleteJobPosting(id)를 호출하여 id에 해당하는 채용공고를 삭제합니다.
    채용공고가 성공적으로 삭제되면 "채용공고가 삭제되었음." 메시지와 HTTP 상태 코드 200을 반환합니다.
    </aside>
@@ -312,7 +312,7 @@
     }
    ```
    <aside>
-   *️⃣ jobPostingRepository.findAll()로 모든 채용공고를 db에서 가져옵니다.
+   ➡️ jobPostingRepository.findAll()로 모든 채용공고를 db에서 가져옵니다.
    </aside>
    <br>
 
@@ -323,7 +323,7 @@
     }
    ```
    <aside>
-   *️⃣  /list 엔드포인트에 GET 요청이 오면 메서드가 실행됩니다.
+   ➡️ /list 엔드포인트에 GET 요청이 오면 메서드가 실행됩니다.
    jobPostingService.getJobPostingsList()를 호출하여 채용공고 목록을 가져옵니다.
    채용공고 목록을 HTTP 상태코드 200과 함께 반환합니다.
    </aside>
@@ -343,7 +343,7 @@
     }
    ```
    <aside>
-   *️⃣ Spring Data JPA의 네이밍 규칙을 사용하여 키워드를 포함하는 채용공고를 검색합니다.
+   ➡️ Spring Data JPA의 네이밍 규칙을 사용하여 키워드를 포함하는 채용공고를 검색합니다.
    검색된 채용공고들을 jobPostingListDTO로 매핑하고 리스트로 반환합니다.
    </aside>
    <br>
@@ -355,7 +355,7 @@
     }
    ```
    <aside>
-   *️⃣ /search 엔드포인트에 GET 요청이 오면 메서드가 실행됩니다.
+   ➡️ /search 엔드포인트에 GET 요청이 오면 메서드가 실행됩니다.
    jobPostingService.searchJobPosting(keyword)를 호출하여 검색을 수행합니다.
    </aside>
    <br>
@@ -380,7 +380,7 @@
     }
    ```
    <aside>
-   *️⃣ jobPostingRepository.findById(id)로 id에 해당하는 채용공고를 찾고 없으면 예외를 발생시키고 있으면 가져옵니다.
+   ➡️ jobPostingRepository.findById(id)로 id에 해당하는 채용공고를 찾고 없으면 예외를 발생시키고 있으면 가져옵니다.
    jobPostingRepository.findByCompanyId(jobPosting.getCompany().getId())로 동일한 회사id를 가진 다른 채용공고들을 db에서 가져와 현재 요청한 채용공고 id와 같이 않은 채용공고 id를 리스트로 수집합니다.
    이 정보와 함께 채용공고 상세 정보를 DTO를 생성하여 반환합니다.
    </aside>
@@ -393,7 +393,7 @@
     }
    ```
    <aside>
-   *️⃣ /details/{id} 엔드포인트에 GET 요청이 오면 메서드가 실행됩니다.
+   ➡️ /details/{id} 엔드포인트에 GET 요청이 오면 메서드가 실행됩니다.
    jobPostingService.getJobPostingById(id)를 호출하여 id에 해당하는 채용공고의 상세 정보를 상태코드와 함께 반환합니다.
    </aside>
    <br>
@@ -432,7 +432,7 @@
     }
    ```
    <aside>
-   *️⃣ historyRepository.existsByJobPostingIdAndUserId(jobPostingId, userId)로 중복 지원 여부를 확인하고 중복 지원일 경우 예외를 발생시킵니다.
+   ➡️ historyRepository.existsByJobPostingIdAndUserId(jobPostingId, userId)로 중복 지원 여부를 확인하고 중복 지원일 경우 예외를 발생시킵니다.
    historyRepository.save(history) 이력을 저장하고 저장된 정보로 historyDTO를 업데이트한 후 반환합니다.
    </aside>
    <br>
@@ -450,7 +450,7 @@
     }
    ```
    <aside>
-   *️⃣ /jobApply 엔드포인트에 POST 요청이 오면 메서드가 실행됩니다.
+   ➡️ /jobApply 엔드포인트에 POST 요청이 오면 메서드가 실행됩니다.
    historyService.applyToJob(historyDTO)를 호출하여 채용공고에 지원하고 지원내역을 반환합니다.
    이미 지원한 경우 예외처리와 함께 클라이언트에 적절한 에러 응답을 반환합니다.
    </aside>
